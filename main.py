@@ -35,27 +35,24 @@ data = st.button("Search")
 st.divider()
 
 if data:
-    ratios_table = dynamodb.Table('company_ratios')
     xhtml_table = dynamodb.Table('company_xhtml_data')
     company_ids = []
-    response = ratios_table.scan(
-        FilterExpression=boto3.dynamodb.conditions.Attr('non_micro').eq(True)
-    )
+    response = xhtml_table.scan()
+
     company_ids.extend(item['companyID'] for item in response['Items'])
 
     while 'LastEvaluatedKey' in response:
-        response = ratios_table.scan(
-            FilterExpression=boto3.dynamodb.conditions.Attr('non_micro').eq(True),
+        response = xhtml_table.scan(
             ExclusiveStartKey=response['LastEvaluatedKey']
         )
         company_ids.extend(item['companyID'] for item in response['Items'])
 
-    st.write(f'Number of Non-Micro companies: {len(company_ids)}')
+    st.write(f'Number of companies: {len(company_ids)}')
 
     progress_bar = st.progress(0)
     total_companies = len(company_ids)
 
-    for index, company_id in enumerate(company_ids):
+    for index, company_id in enumerate(set(company_ids)):  # Ensure unique company IDs
         response = xhtml_table.query(
             KeyConditionExpression=boto3.dynamodb.conditions.Key('companyID').eq(company_id),
             ScanIndexForward=False,  # This will ensure the results are returned in descending order
@@ -94,5 +91,6 @@ if data:
                 for match in company_matches:
                     st.markdown(f"**Matching Sentence:** {match['Matching Sentence']}")
                     st.markdown("---")
+                    
         progress_bar.progress((index + 1) / total_companies)
 
