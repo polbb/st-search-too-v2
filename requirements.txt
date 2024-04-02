@@ -1,0 +1,10 @@
+requests
+boto3
+python-dotenv
+pandas
+
+
+streamlit
+bs4
+beautifulsoup4
+fuzzywuzzy
