@@ -51,7 +51,7 @@ if data:
     processing_placeholder = st.empty()
 
     for index, company_id in enumerate(set(company_ids)):  # Ensure unique company IDs
-        # processing_placeholder.write(f'Processing company {index + 1} of {total_companies}: {company_id}')
+        processing_placeholder.write(f'Processing company {index + 1}')
         response = xhtml_table.query(
             KeyConditionExpression=boto3.dynamodb.conditions.Key('companyID').eq(company_id),
             ScanIndexForward=False,  # This will ensure the results are returned in descending order
