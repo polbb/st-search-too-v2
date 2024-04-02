@@ -93,7 +93,7 @@ if data:
                     st.markdown(f"**Matching Sentence:** {match['Matching Sentence']}")
                     st.markdown("---")
             else:
-                st.write(f"No matching sentences found for company {company_id}.")
+                scanning_placeholder.write(f"No matching sentences found for company {company_id}.")
                     
         progress_bar.progress((index + 1) / total_companies)
 
