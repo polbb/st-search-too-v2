@@ -167,3 +167,4 @@ cython_debug/
 # Below are the template github ignored files
 /src/scripts/.env.txt
 /.env.txt
+/notes.txt

@@ -47,7 +47,7 @@ if data:
         )
         company_ids.extend(item['companyID'] for item in response['Items'])
 
-    st.write(f'Number of companies: {len(company_ids)}')
+    st.write(f'Number of companies: {len(set(company_ids))}')
 
     progress_bar = st.progress(0)
     total_companies = len(company_ids)
