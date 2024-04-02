@@ -30,7 +30,8 @@ data = st.button("Search")
 st.divider()
 
 if data:
-    st.write("Starting to scan company_xhtml_data table for company IDs...")
+    scanning_placeholder = st.empty()
+    scanning_placeholder.write("Starting to scan company_xhtml_data table for company IDs...")
     xhtml_table = dynamodb.Table('company_xhtml_data')
     company_ids = []
     response = xhtml_table.scan()
@@ -43,19 +44,20 @@ if data:
         )
         company_ids.extend(item['companyID'] for item in response['Items'])
 
-    st.write(f'Number of companies found: {len(set(company_ids))}')
+    scanning_placeholder.write(f'Number of companies found: {len(set(company_ids))}')
 
     progress_bar = st.progress(0)
     total_companies = len(set(company_ids))  # Adjusted to reflect unique company IDs
+    processing_placeholder = st.empty()
 
     for index, company_id in enumerate(set(company_ids)):  # Ensure unique company IDs
-        st.write(f'Processing company {index + 1} of {total_companies}: {company_id}')
+        processing_placeholder.write(f'Processing company {index + 1} of {total_companies}: {company_id}')
         response = xhtml_table.query(
             KeyConditionExpression=boto3.dynamodb.conditions.Key('companyID').eq(company_id),
             ScanIndexForward=False,  # This will ensure the results are returned in descending order
             Limit=1  # We only need the latest item
         )
-        st.write('Response retrieved for the latest year.')
+        processing_placeholder.write('Response retrieved for the latest year.')
         if 'Items' in response and response['Items']:
             latest_item = response['Items'][0]  # Get the first item which is the latest due to ScanIndexForward=False
             s3_key = latest_item['s3key']
@@ -63,7 +65,7 @@ if data:
             s3_content = s3_object['Body'].read().decode('utf-8')
             soup = BeautifulSoup(s3_content, 'html.parser')
             text = soup.get_text(separator=' ', strip=True)
-            st.write('Text extracted from XHTML content.')
+            processing_placeholder.write('Text extracted from XHTML content.')
             
             # Improved extraction and exclusion of the accounting policies section from the search
             accounting_policies_pattern = re.compile(r'(\d+\.?)\s*Accounting Policies.*?(?=\d+\.)', re.IGNORECASE | re.DOTALL)
