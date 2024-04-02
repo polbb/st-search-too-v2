@@ -24,6 +24,7 @@ dynamodb = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id, aws_s
 s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key, region_name=aws_default_region)
 
 st.title("ArgoXai - Search Tool v2")
+# st.title("ArgoXai - Search Tool v2")
 col1, col2, _, _, _, _, _, _ = st.columns([3,3,1,1,1,1,1,1])
 fuzzy_search = col1.text_input("Search Documents")
 data = st.button("Search")
